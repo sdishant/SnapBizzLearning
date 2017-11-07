@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace MVVMApp.ViewModel
 {
@@ -13,11 +8,7 @@ namespace MVVMApp.ViewModel
         
         protected virtual void OnPropertyChanged(string name)
         {
-            var ev = PropertyChanged;
-            if (ev != null)
-            {
-                ev(this, new PropertyChangedEventArgs(name));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

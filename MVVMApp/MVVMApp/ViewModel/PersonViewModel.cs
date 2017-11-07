@@ -1,4 +1,5 @@
-﻿using MVVMApp.Model;
+﻿using MVVMApp.Interfaces;
+using MVVMApp.Model;
 using MVVMApp.Views;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace MVVMApp.ViewModel
 {
     public class PersonViewModel : ViewModelBase
     {
+        public INavigationService NavigationService { get; set; }
+
         private string name;
 
         public string Name
@@ -44,9 +47,10 @@ namespace MVVMApp.ViewModel
 
         public RelayCommand RegistrationCommand { get; set; }
 
-        public PersonViewModel()
+        public PersonViewModel(INavigationService navigationService)
         {
             RegistrationCommand = new RelayCommand(DoRegistration);
+            NavigationService = navigationService;
         }
 
         private void DoRegistration(object obj)
@@ -55,6 +59,7 @@ namespace MVVMApp.ViewModel
             person.Name = this.Name;
             person.Age = this.Age;
             person.Address = this.Address;
+            NavigationService.NavigateTo(typeof(Welcome), person);
         }
     }
 }
