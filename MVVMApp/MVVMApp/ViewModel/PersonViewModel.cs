@@ -3,9 +3,12 @@ using MVVMApp.Model;
 using MVVMApp.Views;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace MVVMApp.ViewModel
 {
@@ -18,7 +21,8 @@ namespace MVVMApp.ViewModel
         public string Name
         {
             get { return name; }
-            set {
+            set
+            {
                 name = value;
                 OnPropertyChanged(nameof(Name));
             }
@@ -29,7 +33,9 @@ namespace MVVMApp.ViewModel
         public int Age
         {
             get { return age; }
-            set { age = value;
+            set
+            {
+                age = value;
                 OnPropertyChanged(nameof(Age));
             }
         }
@@ -39,7 +45,8 @@ namespace MVVMApp.ViewModel
         public string Address
         {
             get { return address; }
-            set {
+            set
+            {
                 address = value;
                 OnPropertyChanged(nameof(Address));
             }
@@ -53,13 +60,42 @@ namespace MVVMApp.ViewModel
             NavigationService = navigationService;
         }
 
-        private void DoRegistration(object obj)
+        private async void DoRegistration(object obj)
         {
             Person person = new Person();
             person.Name = this.Name;
             person.Age = this.Age;
             person.Address = this.Address;
-            NavigationService.NavigateTo(typeof(Welcome), person);
+            await DoSomeResourceInsiveTaskAsync(UpdateUIImage);
+            //NavigationService.NavigateTo(typeof(Welcome), person);
         }
+
+        private async Task<int> DoSomeResourceInsiveTaskAsync(Action<int> UpdateUIImage)
+        {
+            int sum = 0;
+            await Task.Run(() =>
+            {
+                for (int i = 0; i < 100; i++)
+                {
+                    sum += 10 * i + 1;  
+                    if (i % 4 == 0)
+                    {
+                        CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+                         () =>
+                         {
+                             UpdateUIImage(sum);
+                         });
+                    }
+                    Debug.WriteLine(sum);
+                }
+            });
+            return sum;
+        }
+
+        private void UpdateUIImage(int Sum)
+        {
+            Age = Sum;
+        }
+        
     }
 }
